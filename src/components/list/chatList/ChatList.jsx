@@ -1,4 +1,5 @@
 import { useState } from "react";
+import AddUser from "./addUser/AddUser";
 import "./chatList.css";
 export const ChatList = () => {
   const [addMode, setAddMode] = useState(false);
@@ -20,17 +21,18 @@ export const ChatList = () => {
       <div className="item">
         <img src="./avatar.png" alt="" />
         <div className="texts">
-            <span>Jane Doe</span>
-            <p>Hello</p>
+          <span>Jane Doe</span>
+          <p>Hello</p>
         </div>
       </div>
       <div className="item">
         <img src="./avatar.png" alt="" />
         <div className="texts">
-            <span>Jane Doe</span>
-            <p>Hello</p>
+          <span>Jane Doe</span>
+          <p>Hello</p>
         </div>
       </div>
+      {addMode && <AddUser></AddUser>}
     </div>
   );
 };
