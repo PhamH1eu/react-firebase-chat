@@ -6,9 +6,11 @@ import Notification from "./components/notification/Notification";
 
 import { useUserStore } from "./store/userStore";
 import { useListenAuth } from "./hooks/useListenAuth";
+import { useChatStore } from "./store/chatStore";
 
 const App = () => {
   const { currentUser, isLoading } = useUserStore();
+  const chatId = useChatStore((state) => state.chatId);
 
   useListenAuth();
 
@@ -19,8 +21,8 @@ const App = () => {
       {currentUser ? (
         <>
           <List />
-          <Chat />
-          <Detail />
+          {chatId && <Chat />}
+          {chatId && <Detail />}
         </>
       ) : (
         <Landing />

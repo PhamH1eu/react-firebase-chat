@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { doc, setDoc } from "firebase/firestore";
 import { useAuthCreateUserWithEmailAndPassword } from "@react-query-firebase/auth";
 import { LoadingButton } from "@mui/lab";
-import { auth, db } from "../../lib/firebase";
+import { auth } from "../../lib/firebase";
 import { useUserStore } from "../../store/userStore";
+import { UserService, ChatService } from "../../services/DatabaseService";
 import upload from "../../shared/helper/upload";
 import "./login.css";
 
@@ -53,17 +53,24 @@ export const Signup = () => {
 
       const avatarUrl = await upload(avatar.file);
 
-      await setDoc(doc(db, "users", res.user.uid), {
-        username,
-        email,
-        avatar: avatarUrl,
-        id: res.user.uid,
-        blocked: [],
-      });
+      await UserService.create(
+        {
+          username,
+          email,
+          avatar: avatarUrl,
+          id: res.user.uid,
+          blocked: [],
+        },
+        res.user.uid
+      );
 
-      await setDoc(doc(db, "userchats", res.user.uid), {
-        chats: [],
-      });
+      await ChatService.create(
+        {
+          chats: [],
+          id: res.user.uid,
+        },
+        res.user.uid
+      );
 
       toast.success("User created successfully");
       fetchUserInfo(res.user.uid);
