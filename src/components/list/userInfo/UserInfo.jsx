@@ -12,7 +12,6 @@ export const UserInfo = () => {
       </div>
       <div className="icons">
         <img src="./more.png" alt="more" />
-        <img src="./video.png" alt="video" />
         <img src="./edit.png" alt="edit" />
       </div>
     </div>

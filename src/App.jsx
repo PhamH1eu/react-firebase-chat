@@ -1,7 +1,7 @@
 import { Chat } from "./components/chat/Chat";
 import { Detail } from "./components/detail/Detail";
 import { List } from "./components/list/List";
-import { Landing } from "./components/login/Landing";
+import { Landing } from "./components/auth/Landing";
 import Notification from "./components/notification/Notification";
 
 import { useUserStore } from "./store/userStore";

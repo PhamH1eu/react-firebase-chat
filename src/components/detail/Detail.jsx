@@ -1,27 +1,27 @@
-import { doc, updateDoc, arrayRemove, arrayUnion } from "firebase/firestore";
-import { auth, db } from "../../lib/firebase";
+import { auth } from "../../lib/firebase";
 import { useChatStore } from "../../store/chatStore";
 import { useUserStore } from "../../store/userStore";
+import BlockUser from "src/services/BlockUser";
 import "./detail.css";
 
 export const Detail = () => {
-  const { user, isCurrentUserBlocked, isReceiverBlocked, changeBlock } =
-    useChatStore();
-  const {currentUser} = useUserStore();
+  const {
+    user,
+    isCurrentUserBlocked,
+    isReceiverBlocked,
+    changeBlock,
+    resetChat,
+  } = useChatStore();
+  const { currentUser } = useUserStore();
 
   const handleBlock = async () => {
-    if (!user) return;
+    BlockUser(user, isReceiverBlocked, currentUser);
+    changeBlock();
+  };
 
-    const userDocRef = doc(db, "users", currentUser.id);
-
-    try {
-      await updateDoc(userDocRef, {
-        blocked: isReceiverBlocked ? arrayRemove(user.id) : arrayUnion(user.id),
-      });
-      changeBlock();
-    } catch (err) {
-      console.log(err);
-    }
+  const logout = () => {
+    auth.signOut();
+    resetChat();
   };
 
   return (
@@ -60,36 +60,6 @@ export const Detail = () => {
               </div>
               <img src="./download.png" alt="" className="icon" />
             </div>
-            <div className="photoItem">
-              <div className="photoDetail">
-                <img
-                  src="https://images.pexels.com/photos/7381200/pexels-photo-7381200.jpeg?auto=compress&cs=tinysrgb&w=800&lazy=load"
-                  alt=""
-                />
-                <span>photo_2024_2.png</span>
-              </div>
-              <img src="./download.png" alt="" className="icon" />
-            </div>
-            <div className="photoItem">
-              <div className="photoDetail">
-                <img
-                  src="https://images.pexels.com/photos/7381200/pexels-photo-7381200.jpeg?auto=compress&cs=tinysrgb&w=800&lazy=load"
-                  alt=""
-                />
-                <span>photo_2024_2.png</span>
-              </div>
-              <img src="./download.png" alt="" className="icon" />
-            </div>
-            <div className="photoItem">
-              <div className="photoDetail">
-                <img
-                  src="https://images.pexels.com/photos/7381200/pexels-photo-7381200.jpeg?auto=compress&cs=tinysrgb&w=800&lazy=load"
-                  alt=""
-                />
-                <span>photo_2024_2.png</span>
-              </div>
-              <img src="./download.png" alt="" className="icon" />
-            </div>
           </div>
         </div>
         <div className="option">
@@ -105,7 +75,7 @@ export const Detail = () => {
             ? "User blocked"
             : "Block User"}
         </button>
-        <button className="logout" onClick={() => auth.signOut()}>
+        <button className="logout" onClick={logout}>
           Logout
         </button>
       </div>

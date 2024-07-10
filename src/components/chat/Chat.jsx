@@ -17,13 +17,11 @@ import { format } from "date-fns";
 export const Chat = () => {
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
-
   const [chat, setChat] = useState();
   const [img, setImg] = useState({
     file: null,
     url: "",
   });
-
   const endRef = useRef(null);
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -32,6 +30,8 @@ export const Chat = () => {
   const { currentUser } = useUserStore();
   const { chatId, user, isCurrentUserBlocked, isReceiverBlocked } =
     useChatStore();
+  
+  //khi chatID thay đổi(bằng cách bấm chat với ng khác) => lấy dữ liệu chat từ db
   useEffect(() => {
     const unSub = onSnapshot(doc(db, "chats", chatId), (res) => {
       setChat(res.data());
@@ -46,7 +46,6 @@ export const Chat = () => {
     setText(text + e.emoji);
     setOpen(false);
   };
-
   const handleImg = (e) => {
     if (e.target.files[0]) {
       setImg({
@@ -58,7 +57,6 @@ export const Chat = () => {
 
   const handleSend = async () => {
     if (text === "" && img.file == null) return;
-    console.log("send");
 
     let imgUrl = null;
 
@@ -82,13 +80,14 @@ export const Chat = () => {
         const userChatsSnapshot = await getDoc(userChatsRef);
 
         if (userChatsSnapshot.exists()) {
-          const userChatsData = userChatsSnapshot.data(); 
+          const userChatsData = userChatsSnapshot.data();
           //get chat from a list of chats of a user
           const chatIndex = userChatsData.chats.findIndex(
             (c) => c.chatId === chatId
           );
 
-          userChatsData.chats[chatIndex].lastMessage = text == "" ? "has sent an images" : text;
+          userChatsData.chats[chatIndex].lastMessage =
+            text == "" ? "has sent an images" : text;
           userChatsData.chats[chatIndex].isSeen =
             id === currentUser.id ? true : false;
           userChatsData.chats[chatIndex].updatedAt = Date.now();
@@ -135,11 +134,13 @@ export const Chat = () => {
           >
             <div className="texts">
               {message.img && <img src={message.img} alt="" />}
-              {message.text != "" &&  <p>{message.text}</p>}
+              {message.text != "" && <p>{message.text}</p>}
               <span>{format(message.createdAt.toDate(), "dd MMM")}</span>
             </div>
           </div>
         ))}
+
+        {/* preview ảnh đã chọn => cần fix */}
         {img.url && (
           <div className="message own">
             <div className="texts">
@@ -147,6 +148,7 @@ export const Chat = () => {
             </div>
           </div>
         )}
+        
         <div ref={endRef}></div>
       </div>
       <div className="bottom">

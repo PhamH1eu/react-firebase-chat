@@ -15,6 +15,16 @@ class DatabaseService {
     this.collection = collectionName;
   }
 
+  get = async (id) => {
+    const docRef = doc(db, this.collection, id);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      return docSnap;
+    } else {
+      return null;
+    }
+  }
+
   // save a new document in the database
   create = async (data, id) => {
     if (id) {
